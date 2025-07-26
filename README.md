@@ -5,7 +5,7 @@ Spring Boot와 Gradle을 사용하여 마이크로서비스 아키텍처(MSA) �
 ## 🚀 아키텍처
 - **MSA (Microservices Architecture):** 각 도메인(회원, 위치, 매칭 등)을 독립적인 서비스로 분리하여 개발 및 배포의 유연성을 확보합니다.
 - **Multi-Module (Monorepo):** 모든 마이크로서비스 코드를 단일 Gradle 프로젝트 내의 하위 모듈로 관리하여 코드의 일관성과 의존성 관리를 용이하게 합니다.
-- **기술 스택:** Java 17, Spring Boot 3.x, Gradle, JPA(Hibernate), H2 (예시)
+- **기술 스택:** Java 21, Spring Boot 3.x, Gradle, JPA(Hibernate), H2 (예시)
 
 ## 📦 모듈 구조
 
@@ -19,5 +19,5 @@ Spring Boot와 Gradle을 사용하여 마이크로서비스 아키텍처(MSA) �
 ## 🛠️ 시작하기
 
 ### 사전 요구사항
-- Java 17 (or later)
+- Java 21 (or later)
 - Gradle 8.x
