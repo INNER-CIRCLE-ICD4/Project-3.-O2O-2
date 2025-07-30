@@ -1,0 +1,23 @@
+spring:
+    application:
+        name: auth-service
+    h2:
+        console: { enabled: true }
+    datasource:
+        url: jdbc:h2:mem:testdb
+        driver-class-name: org.h2.Driver
+        username: sa
+        password:
+    jpa:
+        hibernate:
+            ddl-auto: create-drop
+    properties:
+        hibernate:
+            show_sql: true
+            format_sql: true
+
+jwt:
+    secret: "9f0ee7b5034748d74eae3dc77c738496b24c6f01f191ec0b914cf74310a1a413"
+    access-token-expiration-minutes: 15
+    refresh-token-expiration-days: 1
+

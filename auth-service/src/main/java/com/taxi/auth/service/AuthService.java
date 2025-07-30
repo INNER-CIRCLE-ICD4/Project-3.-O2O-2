@@ -1,13 +1,20 @@
 package com.taxi.auth.service;
 
+import com.taxi.auth.dto.SignupReq;
 import com.taxi.auth.dto.TokenDto;
+import com.taxi.auth.entity.*;
 import com.taxi.auth.exception.InvalidTokenException;
+import com.taxi.auth.exception.UserAlreadyExistsException;
 import com.taxi.auth.jwt.JwtTokenProvider;
+import com.taxi.auth.repository.DriverRepository;
+import com.taxi.auth.repository.PassengerRepository;
+import com.taxi.auth.repository.UserAccountRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -19,16 +26,67 @@ public class AuthService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
 
+    private final UserAccountRepository userAccountRepository;
+    private final PassengerRepository passengerRepository;
+    private final DriverRepository driverRepository;
+    private final PasswordEncoder passwordEncoder;
+
     private final Map<String, String> refreshTokenStorage = new ConcurrentHashMap<>();
 
     @Transactional
-    public TokenDto
-    login(String username, String password) {
+    public void signupPassenger(SignupReq signupReq) {
+        if (userAccountRepository.findByEmail(signupReq.getEmail()).isPresent()) {
+            throw new UserAlreadyExistsException("이미 가입된 이메일입니다.");
+        }
+        UserAccount userAccount = UserAccount.builder()
+            .email(signupReq.getEmail())
+            .password(passwordEncoder.encode(signupReq.getPassword()))
+            .userType(UserType.PASSENGER)
+            .build();
+        userAccountRepository.save(userAccount);
+
+        Passenger passenger = Passenger.builder()
+            .userAccount(userAccount)
+            .name(signupReq.getName())
+            .phoneNumber(signupReq.getPhoneNumber())
+            .build();
+        passengerRepository.save(passenger);
+    }
+
+    @Transactional
+    public void signupDriver(SignupReq signupReq) {
+        if (userAccountRepository.findByEmail(signupReq.getEmail()).isPresent()) {
+            throw new UserAlreadyExistsException("이미 가입된 이메일입니다.");
+        }
+        UserAccount userAccount = UserAccount.builder()
+            .email(signupReq.getEmail())
+            .password(passwordEncoder.encode(signupReq.getPassword()))
+            .userType(UserType.DRIVER)
+            .build();
+        userAccountRepository.save(userAccount);
+
+        Driver driver = Driver.builder()
+            .userAccount(userAccount)
+            .name(signupReq.getName())
+            .phoneNumber(signupReq.getPhoneNumber())
+            .licenseNumber(signupReq.getLicenseNumber())
+            .vehicleNumber(signupReq.getVehicleNumber())
+            .vehicleModel(signupReq.getVehicleModel())
+            .vehicleType(signupReq.getVehicleType())
+            .approveStatus(ApproveStatus.PENDING) // 가입 시 기본값 설정
+            .driveStatus(DriveStatus.END)   // 가입 시 기본값 설정
+            .build();
+        driverRepository.save(driver);
+    }
+
+    @Transactional
+    public TokenDto login(String username, String password) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         TokenDto tokenDto = jwtTokenProvider.generateToken(authentication);
         String refreshToken = jwtTokenProvider.generateRefreshToken(authentication);
-//        refreshTokenStorage.put(authentication.getName(), refreshToken);
+        refreshTokenStorage.put(authentication.getName(), refreshToken);
+
         return tokenDto;
     }
 

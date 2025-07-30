@@ -1,12 +1,14 @@
 package com.taxi.auth.controller;
 
 import com.taxi.auth.dto.LoginDto;
+import com.taxi.auth.dto.SignupReq;
 import com.taxi.auth.dto.TokenDto;
 import com.taxi.auth.service.AuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,11 +21,23 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     private final AuthService authService;
 
+    @PostMapping("/signup/passenger")
+    public ResponseEntity<String> signupPassenger(@RequestBody SignupReq signupReq) {
+        authService.signupPassenger(signupReq);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Passenger signed up successfully");
+    }
+
+    @PostMapping("/signup/driver")
+    public ResponseEntity<String> signupDriver(@RequestBody SignupReq signupReq) {
+        authService.signupDriver(signupReq);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Driver signed up successfully");
+    }
+
     @PostMapping("/login")
     public ResponseEntity<TokenDto> login(@RequestBody LoginDto loginDto, HttpServletResponse response) {
-        TokenDto tokenDto = authService.login(loginDto.getUsername(), loginDto.getPassword());
+        TokenDto tokenDto = authService.login(loginDto.getName(), loginDto.getPassword());
 
-        Cookie refreshTokenCookie = new Cookie("refreshToken", authService.getRefreshToken(loginDto.getUsername()));
+        Cookie refreshTokenCookie = new Cookie("refreshToken", authService.getRefreshToken(loginDto.getName()));
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setPath("/");
         refreshTokenCookie.setMaxAge(7 * 24 * 60 * 60);

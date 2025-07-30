@@ -30,6 +30,9 @@ dependencies {
 
     // 개발 편의를 위한 devtools를 추가합니다.
     developmentOnly("org.springframework.boot:spring-boot-devtools")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.security:spring-security-test")
 }
 
 tasks.withType<Test> {
