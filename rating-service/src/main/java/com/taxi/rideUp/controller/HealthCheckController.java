@@ -1,0 +1,22 @@
+package com.taxi.rideUp.controller;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * packageName : com.taxi.rideUp.controller
+ * fileName    : InitController
+ * author      : ckr
+ * date        : 25. 7. 31.
+ * description :
+ */
+
+@RestController
+public class HealthCheckController {
+
+    @GetMapping("/")
+    public ResponseEntity<String> healthCheck() {
+        return ResponseEntity.ok("Hello world! This is Rating Service.");
+    }
+}
