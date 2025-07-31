@@ -35,11 +35,12 @@ public class AuthService {
 
     @Transactional
     public void signupPassenger(SignupReq signupReq) {
-        if (userAccountRepository.findByEmail(signupReq.getEmail()).isPresent()) {
-            throw new UserAlreadyExistsException("이미 가입된 이메일입니다.");
+        if(userAccountRepository.findByPhoneNumber(signupReq.getPhoneNumber()).isPresent()) {
+            throw new UserAlreadyExistsException("이미 가입된 핸드폰 번호입니다.");
         }
         UserAccount userAccount = UserAccount.builder()
             .email(signupReq.getEmail())
+            .phoneNumber(signupReq.getPhoneNumber())
             .password(passwordEncoder.encode(signupReq.getPassword()))
             .userType(UserType.PASSENGER)
             .build();
@@ -55,11 +56,13 @@ public class AuthService {
 
     @Transactional
     public void signupDriver(SignupReq signupReq) {
-        if (userAccountRepository.findByEmail(signupReq.getEmail()).isPresent()) {
-            throw new UserAlreadyExistsException("이미 가입된 이메일입니다.");
+        if(userAccountRepository.findByPhoneNumber(signupReq.getPhoneNumber()).isPresent()) {
+            throw new UserAlreadyExistsException("이미 가입된 핸드폰 번호입니다.");
         }
+
         UserAccount userAccount = UserAccount.builder()
             .email(signupReq.getEmail())
+            .phoneNumber(signupReq.getPhoneNumber())
             .password(passwordEncoder.encode(signupReq.getPassword()))
             .userType(UserType.DRIVER)
             .build();
@@ -80,8 +83,8 @@ public class AuthService {
     }
 
     @Transactional
-    public TokenDto login(String username, String password) {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
+    public TokenDto login(String phoneNumber, String password) {
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(phoneNumber, password);
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         TokenDto tokenDto = jwtTokenProvider.generateToken(authentication);
         String refreshToken = jwtTokenProvider.generateRefreshToken(authentication);

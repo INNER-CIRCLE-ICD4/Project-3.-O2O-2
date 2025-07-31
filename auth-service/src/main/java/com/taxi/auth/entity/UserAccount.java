@@ -18,6 +18,9 @@ public class UserAccount {
     private Long id;
 
     @Column(nullable = false, unique = true)
+    private String phoneNumber;
+
+    @Column
     private String email;
 
     @Column(nullable = false)

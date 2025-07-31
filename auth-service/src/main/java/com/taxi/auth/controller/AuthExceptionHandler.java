@@ -1,5 +1,6 @@
 package com.taxi.auth.controller;
 
+import com.taxi.auth.exception.UnauthorizedAttemptException;
 import com.taxi.auth.exception.UserAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +14,8 @@ public class AuthExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    protected ResponseEntity<String> handleBaseException(RuntimeException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    @ExceptionHandler(UnauthorizedAttemptException.class)
+    protected ResponseEntity<String> handleUnauthorizedAttemptException(UnauthorizedAttemptException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     }
 }
