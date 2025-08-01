@@ -23,6 +23,9 @@ subprojects {
         compileOnly("org.projectlombok:lombok")
         annotationProcessor("org.projectlombok:lombok")
 
+        compileOnly("org.apache.logging.log4j:log4j-api")
+        compileOnly("org.apache.logging.log4j:log4j-core")
+
         // 모든 모듈에 공통으로 들어갈 의존성
         implementation("org.springframework.boot:spring-boot-starter-web")
         testImplementation("org.springframework.boot:spring-boot-starter-test")
