@@ -2,12 +2,12 @@ package com.taxi.rideUp.service;
 
 import com.taxi.rideUp.domain.ScoreHistoryEntity;
 import com.taxi.rideUp.dto.request.ScoreHistoryCreateRequest;
-import com.taxi.rideUp.dto.response.external.DriverValidationResponse;
-import com.taxi.rideUp.repository.ScoreHistoryRepository;
 import com.taxi.rideUp.dto.request.event.ScoreCreatedEventRequest;
-import com.taxi.rideUp.service.external.DriveManageServiceClient;
+import com.taxi.rideUp.dto.response.external.DriverValidationResponse;
 import com.taxi.rideUp.exception.external.DriveManageValidationException;
-import jakarta.transaction.Transactional;
+import com.taxi.rideUp.repository.ScoreHistoryRepository;
+import com.taxi.rideUp.service.external.DriveManageServiceClient;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;

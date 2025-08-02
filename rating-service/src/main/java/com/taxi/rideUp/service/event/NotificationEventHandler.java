@@ -2,8 +2,8 @@ package com.taxi.rideUp.service.event;
 
 import com.taxi.rideUp.dto.request.event.ScoreCreatedEventRequest;
 import com.taxi.rideUp.dto.request.external.NotificationRequest;
-import com.taxi.rideUp.service.external.NotificationServiceClient;
 import com.taxi.rideUp.exception.external.NotificationSendException;
+import com.taxi.rideUp.service.external.NotificationServiceClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -28,7 +28,7 @@ public class NotificationEventHandler {
 
     @Async
     @EventListener
-    public void handleScoreCreatedEvent(ScoreCreatedEventRequest event) {
+    public void handleScoreCreatedEventRequest(ScoreCreatedEventRequest event) {
         NotificationRequest request = new NotificationRequest(
             event.scoreHistoryId(),
             event.score(),

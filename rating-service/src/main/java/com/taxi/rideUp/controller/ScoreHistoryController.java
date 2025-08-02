@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.*;
  */
 
 @RestController
-@RequestMapping("/drive-manage")
+@RequestMapping("/drive-manages")
 @RequiredArgsConstructor
-class ScoreHistoryController {
+public class ScoreHistoryController {
 
     private final ScoreHistoryService scoreHistoryService;
 
