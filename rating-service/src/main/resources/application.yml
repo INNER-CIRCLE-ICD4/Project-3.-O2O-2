@@ -27,3 +27,11 @@ logging:
     level:
       com.taxi.rideUp: DEBUG
       org.hibernate.type: DEBUG
+
+external:
+    drive-manage-service:
+        url: "https://driver-manage-service.co.kr"
+    notification-service:
+        url: "https://notification-service.co.kr"
+    auth-service:
+        url: "https://auth-service.co.kr"

@@ -2,6 +2,7 @@ plugins {
     java
     id("org.springframework.boot")
     id("io.spring.dependency-management")
+    kotlin("jvm")
 }
 
 group = "com.taxi"
@@ -25,8 +26,16 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springdocVersion")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    implementation(kotlin("stdlib-jdk8"))
+}
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2025.0.0")
+    }
 }
 
 tasks.withType<Test> {
