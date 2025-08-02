@@ -1,5 +1,8 @@
 package com.taxi.rideUp.unit.fake;
 
+import com.taxi.rideUp.service.ScoreHistoryService;
+import com.taxi.rideUp.service.external.DriveManageServiceClient;
+import com.taxi.rideUp.unit.fake.component.FakeEventPublisher;
 import com.taxi.rideUp.unit.fake.repository.FakeScoreHistoryRepository;
 
 /**
@@ -10,5 +13,14 @@ import com.taxi.rideUp.unit.fake.repository.FakeScoreHistoryRepository;
  * description :
  */
 public class TestDiContainer {
-    FakeScoreHistoryRepository scoreHistoryRepository = new FakeScoreHistoryRepository();
+    public final FakeScoreHistoryRepository scoreHistoryRepository = new FakeScoreHistoryRepository();
+    public final FakeEventPublisher eventPublisher = new FakeEventPublisher();
+    
+    public ScoreHistoryService createScoreHistoryService(DriveManageServiceClient driveManageServiceClient) {
+        return new ScoreHistoryService(
+            eventPublisher,
+            scoreHistoryRepository,
+            driveManageServiceClient
+        );
+    }
 }

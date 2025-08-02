@@ -20,7 +20,11 @@ public class FakeScoreHistoryRepository implements ScoreHistoryRepository {
     @Override
     public ScoreHistoryEntity save(ScoreHistoryEntity scoreHistoryEntity) {
         if(scoreHistoryEntity.getId() == null) {
+            long idSequence = storedScoreHistoryEntities.stream().mapToLong(ScoreHistoryEntity::getId).max().orElse(0L);
+
             ScoreHistoryEntity newScoreHistoryEntity = ScoreHistoryEntity.builder()
+                .id(++idSequence)
+                .driveManageId(scoreHistoryEntity.getDriveManageId())
                 .score(scoreHistoryEntity.getScore())
                 .createdAt(scoreHistoryEntity.getCreatedAt())
                 .build();
