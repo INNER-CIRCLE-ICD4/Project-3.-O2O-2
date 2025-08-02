@@ -2,7 +2,6 @@ plugins {
     java
     id("org.springframework.boot")
     id("io.spring.dependency-management")
-    kotlin("jvm")
 }
 
 group = "com.taxi"
@@ -29,7 +28,6 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    implementation(kotlin("stdlib-jdk8"))
 }
 
 dependencyManagement {
