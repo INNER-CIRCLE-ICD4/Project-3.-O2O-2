@@ -6,18 +6,18 @@ import java.time.LocalDateTime;
 
 /**
  * packageName : com.taxi.rideUp.dto.request.external
- * fileName    : AverageScoreRequest
+ * fileName    : NotificationSendRequest
  * author      : ckr
  * date        : 25. 8. 2.
  * description :
  */
-public record AverageScoreUpdateRequest(
+public record NotificationSendRequest(
     Long scoreHistoryId,
     Integer score,
     LocalDateTime createdAt
 ) {
-    public static AverageScoreUpdateRequest from(ScoreCreatedEventRequest scoreCreatedEventRequest) {
-        return new AverageScoreUpdateRequest(
+    public static NotificationSendRequest from(ScoreCreatedEventRequest scoreCreatedEventRequest) {
+        return new NotificationSendRequest(
             scoreCreatedEventRequest.scoreHistoryId(),
             scoreCreatedEventRequest.score(),
             scoreCreatedEventRequest.createdAt()

@@ -29,12 +29,7 @@ public class AverageScoreEventHandler {
     @Async
     @EventListener
     public void handleScoreCreatedEventRequest(ScoreCreatedEventRequest event) {
-        AverageScoreUpdateRequest request = new AverageScoreUpdateRequest(
-            event.scoreHistoryId(),
-            event.score(),
-            event.createdAt()
-        );
-
+        AverageScoreUpdateRequest request = AverageScoreUpdateRequest.from(event);
         ResponseEntity<Void> response = authServiceClient.updateAverageScore(request);
 
         if (!response.getStatusCode().is2xxSuccessful()) {
