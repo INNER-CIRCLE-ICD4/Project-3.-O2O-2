@@ -1,5 +1,6 @@
 package com.taxi.rideUp.domain;
 
+import com.taxi.rideUp.dto.request.ScoreHistoryCreateRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +24,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-class ScoreHistoryEntity {
+public class ScoreHistoryEntity {
     @Id
     @Column(name = "score_history_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,4 +39,14 @@ class ScoreHistoryEntity {
 
     @Column(nullable = false)
     private Long driveManageId;
+
+    public static ScoreHistoryEntity createFrom(
+        Long driveManageId,
+        ScoreHistoryCreateRequest scoreHistoryCreateRequest
+    ) {
+        return ScoreHistoryEntity.builder()
+            .score(scoreHistoryCreateRequest.score())
+            .driveManageId(driveManageId)
+            .build();
+    }
 }
