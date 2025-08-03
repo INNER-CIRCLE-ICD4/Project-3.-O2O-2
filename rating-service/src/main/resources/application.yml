@@ -1,0 +1,37 @@
+server:
+    port: 8084
+    servlet:
+        context-path: /rating-service/api
+
+spring:
+    application:
+        name: rating-service
+    h2:
+        console:
+            enabled: true
+    datasource:
+        url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+        driver-class-name: org.h2.Driver
+        username: sa
+        password:
+    jpa:
+        open-in-view: true
+        hibernate:
+            ddl-auto: create-drop
+        properties:
+            hibernate:
+                show_sql: true
+                format_sql: true
+
+logging:
+    level:
+      com.taxi.rideUp: DEBUG
+      org.hibernate.type: DEBUG
+
+external:
+    drive-manage-service:
+        url: "https://driver-manage-service.co.kr"
+    notification-service:
+        url: "https://notification-service.co.kr"
+    auth-service:
+        url: "https://auth-service.co.kr"

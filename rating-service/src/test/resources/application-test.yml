@@ -1,0 +1,40 @@
+server:
+  servlet:
+    context-path: # 테스트에서는 context-path 제거
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+
+  h2:
+    console:
+      enabled: true
+
+# 외부 서비스 URL (테스트용)
+external:
+  drive-manage-service:
+    url: http://localhost:8081
+  auth-service:
+    url: http://localhost:8082
+  notification-service:
+    url: http://localhost:8083
+
+# 로깅 설정
+logging:
+  level:
+    com.taxi.rideUp: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
