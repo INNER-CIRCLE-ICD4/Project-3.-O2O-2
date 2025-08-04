@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Spring Boot 기본 설정을 포함합니다 -->
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <!-- DLT 메시지 전용 파일 Appender 설정 -->
+    <appender name="DLT_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/dlt-events.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 일자별로 로그 파일을 분리하여 저장합니다 -->
+            <fileNamePattern>logs/dlt-events.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- 30일간 로그 보관 -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <!-- 실패한 메시지 객체를 그대로 기록하기 위해 JSON 포맷을 사용할 수 있습니다 -->
+            <!-- 여기서는 간단한 패턴을 사용합니다 -->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- DLT 전용 Logger 정의 -->
+    <logger name="DltLogger" level="ERROR" additivity="false">
+        <appender-ref ref="DLT_FILE" />
+    </logger>
+
+</configuration>

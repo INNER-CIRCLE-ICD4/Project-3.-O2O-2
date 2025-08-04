@@ -6,5 +6,6 @@ include(
     "location-service",
     "matching-service",
     "rating-service",
-    "notification-service"
+    "notification-service",
+    "common"
 )

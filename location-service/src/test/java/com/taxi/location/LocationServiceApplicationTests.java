@@ -1,4 +1,4 @@
-package com.taxi.rideUp;
+package com.taxi.location;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

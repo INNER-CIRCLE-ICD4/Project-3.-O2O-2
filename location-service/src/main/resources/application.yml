@@ -1,0 +1,21 @@
+spring:
+    application:
+        name: location-service
+    data:
+        redis:
+            host: localhost
+            port: 6379
+    kafka:
+        bootstrap-servers: localhost:9092
+        consumer:
+            group-id: location-group
+            auto-offset-reset: earliest
+        producer:
+            key-serializer: org.apache.kafka.common.serialization.StringSerializer
+            value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+app:
+    kafka:
+        topic:
+            driver-location: driver-location
+            driver-location-dlt: driver-location.dlt
