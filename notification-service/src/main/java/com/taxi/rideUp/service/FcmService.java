@@ -1,7 +1,6 @@
 package com.taxi.rideUp.service;
 
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import com.taxi.rideUp.dto.NotificationRequest;

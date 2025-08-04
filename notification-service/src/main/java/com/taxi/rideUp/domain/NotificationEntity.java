@@ -29,6 +29,7 @@ public class NotificationEntity {
     private Long id;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private NotificationType notificationType;
 
     @Column
@@ -41,6 +42,7 @@ public class NotificationEntity {
     private String payload;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private DeliveryStatus deliveryStatus;
 
     @Column(nullable = false)
