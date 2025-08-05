@@ -36,4 +36,5 @@ out/
 ### VS Code ###
 .vscode/
 
+### firebase-key ###
 firebase-service-account.json

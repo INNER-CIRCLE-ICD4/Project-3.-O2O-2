@@ -23,6 +23,14 @@ spring:
                 show_sql: true
                 format_sql: true
 
+springdoc:
+    api-docs:
+        path: /v3/api-docs
+    swagger-ui:
+        path: /swagger-ui.html
+        operationsSorter: alpha
+        defaultModelsExpandDepth: 1
+
 logging:
     level:
         com.taxi.rideUp: DEBUG
