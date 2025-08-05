@@ -3,6 +3,7 @@ package com.taxi.rideUp.service;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
+import com.taxi.rideUp.domain.NotificationTypeEntity;
 import com.taxi.rideUp.dto.NotificationRequest;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +17,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class FcmService {
-    public String sendMessage(NotificationRequest request) throws Exception {
+    public String sendMessage(NotificationRequest request, NotificationTypeEntity type) throws Exception {
         Message message = Message.builder()
             .setToken(request.getTargetToken())
             .setNotification(Notification.builder()
-                .setTitle(request.getTitle())
-                .setBody(request.getBody())
+                .setTitle(type.getTitle())
+                .setBody(type.getMessage())
                 .build())
             .build();
         return FirebaseMessaging.getInstance().send(message);

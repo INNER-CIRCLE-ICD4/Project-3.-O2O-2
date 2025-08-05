@@ -29,8 +29,7 @@ public class NotificationEntity {
     private Long id;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private NotificationType notificationType;
+    private String notificationType;
 
     @Column
     private String title;

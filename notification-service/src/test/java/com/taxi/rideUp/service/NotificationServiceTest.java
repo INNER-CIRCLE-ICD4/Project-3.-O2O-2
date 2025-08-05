@@ -3,7 +3,7 @@ package com.taxi.rideUp.service;
 import com.taxi.rideUp.domain.DeliveryStatus;
 import com.taxi.rideUp.domain.NotificationEntity;
 import com.taxi.rideUp.domain.NotificationHistoryEntity;
-import com.taxi.rideUp.domain.NotificationType;
+import com.taxi.rideUp.domain.NotificationTypeEntity;
 import com.taxi.rideUp.dto.NotificationRequest;
 import com.taxi.rideUp.repository.NotificationHistoryRepository;
 import com.taxi.rideUp.repository.NotificationRepository;
@@ -52,9 +52,9 @@ class NotificationServiceTest {
     void createNotificationSuccess() throws Exception {
         // given
         String successResponse = "success-message-id";
-        NotificationRequest request = createNotificationRequest("테스트 제목", "테스트 내용", "test-token", NotificationType.DRIVER_MATCHED);
+        NotificationRequest request = createNotificationRequest("test-token", "DRIVER_MATCHED");
 
-        given(fcmService.sendMessage(any(NotificationRequest.class)))
+        given(fcmService.sendMessage(any(NotificationRequest.class), any(NotificationTypeEntity.class)))
             .willReturn("FAKE_SUCCESS");
 
         // when
@@ -64,14 +64,14 @@ class NotificationServiceTest {
         List<NotificationEntity> notifications = notificationRepository.findAll();
         assertThat(notifications).hasSize(1)
             .extracting("title", "deliveryStatus")
-            .containsExactly(tuple("테스트 제목", DeliveryStatus.SENT));
+            .containsExactly(tuple("매칭 완료", DeliveryStatus.SENT));
 
         List<NotificationHistoryEntity> histories = notificationHistoryRepository.findAll();
         assertThat(histories).hasSize(1)
             .extracting("result", "receiver")
             .containsExactly(tuple(true, "test-token"));
 
-        verify(fcmService, times(1)).sendMessage(any(NotificationRequest.class));
+        verify(fcmService, times(1)).sendMessage(any(NotificationRequest.class), any(NotificationTypeEntity.class));
     }
 
     @DisplayName("첫번째 시도 실패 후 두번째 시도에서 성공하면 성공 히스토리와 실패 히스토리가 모두 기록된다.")
@@ -80,9 +80,9 @@ class NotificationServiceTest {
         // given
         String errorMessage = "Network timeout";
         String successResponse = "success-message-id";
-        NotificationRequest request = createNotificationRequest("재시도 테스트", "재시도 내용", "retry-token", NotificationType.DRIVER_MATCHED);
+        NotificationRequest request = createNotificationRequest("retry-token", "DRIVER_MATCHED");
 
-        given(fcmService.sendMessage(any(NotificationRequest.class)))
+        given(fcmService.sendMessage(any(NotificationRequest.class), any(NotificationTypeEntity.class)))
             .willThrow(new RuntimeException(errorMessage)) // 첫번째 호출 - 예외발생
             .willReturn(successResponse); // 두번째 호출 - 성공
 
@@ -114,7 +114,7 @@ class NotificationServiceTest {
         assertThat(successHistory.getResultMessage()).isEqualTo(successResponse);
         assertThat(successHistory.getReceiver()).isEqualTo("retry-token");
 
-        verify(fcmService, times(2)).sendMessage(any(NotificationRequest.class));
+        verify(fcmService, times(2)).sendMessage(any(NotificationRequest.class), any(NotificationTypeEntity.class));
     }
 
     @DisplayName("3번 모두 실패하면 FAILED 상태로 저장되고 3개의 실패 히스토리가 기록된다.")
@@ -122,9 +122,9 @@ class NotificationServiceTest {
     void createNotificationAllRetryFailed() throws Exception {
         // given
         String errorMessage = "Persistent network error";
-        NotificationRequest request = createNotificationRequest("실패 테스트", "실패 내용", "failed-token", NotificationType.DRIVER_MATCHED);
+        NotificationRequest request = createNotificationRequest("failed-token", "DRIVER_MATCHED");
 
-        given(fcmService.sendMessage(any(NotificationRequest.class)))
+        given(fcmService.sendMessage(any(NotificationRequest.class), any(NotificationTypeEntity.class)))
             .willThrow(new RuntimeException(errorMessage));
 
         // when
@@ -135,8 +135,8 @@ class NotificationServiceTest {
         assertThat(notifications).hasSize(1);
 
         NotificationEntity notification = notifications.get(0);
-        assertThat(notification.getTitle()).isEqualTo("실패 테스트");
-        assertThat(notification.getMessage()).isEqualTo("실패 내용");
+        assertThat(notification.getTitle()).isEqualTo("매칭 완료");
+        assertThat(notification.getMessage()).isEqualTo("승객과 매칭이 완료되었습니다.");
         assertThat(notification.getDeliveryStatus()).isEqualTo(DeliveryStatus.FAILED);
 
         List<NotificationHistoryEntity> histories = notificationHistoryRepository.findAll();
@@ -150,7 +150,7 @@ class NotificationServiceTest {
             assertThat(history.getNotification().getId()).isEqualTo(notification.getId());
         });
 
-        verify(fcmService, times(3)).sendMessage(any(NotificationRequest.class));
+        verify(fcmService, times(3)).sendMessage(any(NotificationRequest.class), any(NotificationTypeEntity.class));
     }
 
     @DisplayName("여러 종류의 알림 타입으로 알림을 생성할 수 있다.")
@@ -158,10 +158,10 @@ class NotificationServiceTest {
     void createNotificationWithDifferentTypes() throws Exception {
         // given
         String successResponse = "success-message-id";
-        NotificationRequest rideRequest = createNotificationRequest("매칭 완료", "매칭 완료 내용", "ride-token", NotificationType.DRIVER_MATCHED);
-        NotificationRequest paymentRequest = createNotificationRequest("운행 완료", "운행 완료 내용", "ride-token", NotificationType.PASSENGER_RIDE_COMPLETED);
+        NotificationRequest rideRequest = createNotificationRequest("ride-token", "DRIVER_MATCHED");
+        NotificationRequest paymentRequest = createNotificationRequest("ride-token", "PASSENGER_RIDE_COMPLETED");
 
-        given(fcmService.sendMessage(any(NotificationRequest.class)))
+        given(fcmService.sendMessage(any(NotificationRequest.class), any(NotificationTypeEntity.class)))
             .willReturn(successResponse);
 
         // when
@@ -173,14 +173,14 @@ class NotificationServiceTest {
         assertThat(notifications).hasSize(2);
 
         NotificationEntity rideNotification = notifications.stream()
-            .filter(n -> n.getNotificationType() == NotificationType.DRIVER_MATCHED)
+            .filter(n -> n.getNotificationType().equals("DRIVER_MATCHED"))
             .findFirst()
             .orElseThrow();
         assertThat(rideNotification.getTitle()).isEqualTo("매칭 완료");
         assertThat(rideNotification.getDeliveryStatus()).isEqualTo(DeliveryStatus.SENT);
 
         NotificationEntity paymentNotification = notifications.stream()
-            .filter(n -> n.getNotificationType() == NotificationType.PASSENGER_RIDE_COMPLETED)
+            .filter(n -> n.getNotificationType().equals("PASSENGER_RIDE_COMPLETED"))
             .findFirst()
             .orElseThrow();
         assertThat(paymentNotification.getTitle()).isEqualTo("운행 완료");
@@ -194,13 +194,11 @@ class NotificationServiceTest {
             assertThat(history.getResultMessage()).isEqualTo(successResponse);
         });
 
-        verify(fcmService, times(2)).sendMessage(any(NotificationRequest.class));
+        verify(fcmService, times(2)).sendMessage(any(NotificationRequest.class), any(NotificationTypeEntity.class));
     }
 
-    private NotificationRequest createNotificationRequest(String title, String body, String targetToken, NotificationType type) {
+    private NotificationRequest createNotificationRequest(String targetToken, String type) {
         return NotificationRequest.builder()
-            .title(title)
-            .body(body)
             .type(type)
             .targetToken(targetToken)
             .build();

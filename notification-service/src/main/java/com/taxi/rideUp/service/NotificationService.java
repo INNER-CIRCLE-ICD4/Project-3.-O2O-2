@@ -1,17 +1,17 @@
 package com.taxi.rideUp.service;
 
-import com.google.firebase.messaging.Notification;
 import com.taxi.rideUp.domain.DeliveryStatus;
 import com.taxi.rideUp.domain.NotificationEntity;
 import com.taxi.rideUp.domain.NotificationHistoryEntity;
+import com.taxi.rideUp.domain.NotificationTypeEntity;
 import com.taxi.rideUp.dto.NotificationRequest;
 import com.taxi.rideUp.repository.NotificationHistoryRepository;
 import com.taxi.rideUp.repository.NotificationRepository;
+import com.taxi.rideUp.repository.NotificationTypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.beans.Transient;
 import java.time.LocalDateTime;
 
 /**
@@ -29,10 +29,16 @@ public class NotificationService {
     private final FcmService fcmService;
     private final NotificationRepository notificationRepository;
     private final NotificationHistoryRepository notificationHistoryRepository;
+    private final NotificationTypeRepository notificationTypeRepository;
 
     @Transactional
     public void sendNotification(NotificationRequest request) {
-        NotificationEntity notification = saveNewNotification(request);
+        // 알림 타입 조회
+        NotificationTypeEntity type = notificationTypeRepository.findByType(request.getType())
+            .orElseThrow(() -> new IllegalArgumentException("Invalid notification type code"));
+
+        // 알림 저장
+        NotificationEntity notification = saveNewNotification(request, type);
 
         int retryCount = 0;
         boolean isSuccess = false;
@@ -40,7 +46,7 @@ public class NotificationService {
         // 알림 전송 실패시 최대 2번까지 재시도
         while (retryCount < 3 && !isSuccess) {
             try {
-                String response = fcmService.sendMessage(request);
+                String response = fcmService.sendMessage(request, type);
                 notification.updateStatus(DeliveryStatus.SENT);
                 isSuccess = true;
                 saveNotificationHistory(request.getTargetToken(), response, isSuccess, notification);
@@ -63,11 +69,11 @@ public class NotificationService {
         notificationHistoryRepository.save(notificationHistoryEntity);
     }
 
-    private NotificationEntity saveNewNotification(NotificationRequest request) {
+    private NotificationEntity saveNewNotification(NotificationRequest request, NotificationTypeEntity type) {
         NotificationEntity notification = NotificationEntity.builder()
-            .title(request.getTitle())
-            .message(request.getBody())
-            .notificationType(request.getType())
+            .title(type.getTitle())
+            .message(type.getMessage())
+            .notificationType(type.getType())
             .deliveryStatus(DeliveryStatus.PENDING)
             .deliveryCount(0)
             .createdAt(LocalDateTime.now())

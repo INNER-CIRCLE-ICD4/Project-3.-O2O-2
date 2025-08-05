@@ -1,6 +1,5 @@
 package com.taxi.rideUp.dto;
 
-import com.taxi.rideUp.domain.NotificationType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +18,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class NotificationRequest {
     private String targetToken;
-    private NotificationType type;
-    private String title;
-    private String body;
+    private String type;
 }
