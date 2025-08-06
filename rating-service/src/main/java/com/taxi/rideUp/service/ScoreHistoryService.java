@@ -7,12 +7,12 @@ import com.taxi.rideUp.dto.response.external.DriverValidationResponse;
 import com.taxi.rideUp.exception.external.DriveManageValidationException;
 import com.taxi.rideUp.repository.ScoreHistoryRepository;
 import com.taxi.rideUp.service.external.DriveManageServiceClient;
-import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * packageName : com.taxi.rideUp.service
@@ -48,8 +48,7 @@ public class ScoreHistoryService {
         ScoreHistoryEntity savedScoreHistory = scoreHistoryRepository.save(scoreHistoryEntity);
 
         // 3. 이벤트 발행 (AuthService 평점 업데이트 + NotificationService 알림)
-        ScoreCreatedEventRequest event = ScoreCreatedEventRequest.from(savedScoreHistory);
-        eventPublisher.publishEvent(event);
+        eventPublisher.publishEvent(ScoreCreatedEventRequest.from(savedScoreHistory, "targetToken", "ScoreEvent"));
 
         return savedScoreHistory;
     }

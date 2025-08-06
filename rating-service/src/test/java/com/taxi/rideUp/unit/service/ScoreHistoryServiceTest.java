@@ -89,6 +89,8 @@ class ScoreHistoryServiceTest {
         assertThat(publishedEvent.driveManageId()).isEqualTo(driveManageId);
         assertThat(publishedEvent.scoreHistoryId()).isEqualTo(result.getId());
         assertThat(publishedEvent.score()).isEqualTo(result.getScore());
+        assertThat(publishedEvent.notificationTargetToken()).isEqualTo("targetToken");
+        assertThat(publishedEvent.notificationType()).isEqualTo("ScoreEvent");
     }
 
     @Test

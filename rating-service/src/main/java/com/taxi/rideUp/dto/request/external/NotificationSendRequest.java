@@ -1,8 +1,7 @@
 package com.taxi.rideUp.dto.request.external;
 
-import com.taxi.rideUp.dto.request.event.ScoreCreatedEventRequest;
 
-import java.time.LocalDateTime;
+import com.taxi.rideUp.dto.request.event.ScoreCreatedEventRequest;
 
 /**
  * packageName : com.taxi.rideUp.dto.request.external
@@ -12,15 +11,13 @@ import java.time.LocalDateTime;
  * description :
  */
 public record NotificationSendRequest(
-    Long scoreHistoryId,
-    Integer score,
-    LocalDateTime createdAt
+    String targetToken,
+    String type
 ) {
-    public static NotificationSendRequest from(ScoreCreatedEventRequest scoreCreatedEventRequest) {
+    public static NotificationSendRequest from(ScoreCreatedEventRequest request) {
         return new NotificationSendRequest(
-            scoreCreatedEventRequest.scoreHistoryId(),
-            scoreCreatedEventRequest.score(),
-            scoreCreatedEventRequest.createdAt()
+            request.notificationTargetToken(),
+            request.notificationType()
         );
     }
 }

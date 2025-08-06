@@ -66,9 +66,8 @@ class NotificationEventHandlerTest {
             .sendScoreCreatedNotification(requestCaptor.capture());
 
         NotificationSendRequest capturedRequest = requestCaptor.getValue();
-        assertThat(capturedRequest.scoreHistoryId()).isEqualTo(event.scoreHistoryId());
-        assertThat(capturedRequest.score()).isEqualTo(event.score());
-        assertThat(capturedRequest.createdAt()).isEqualTo(event.createdAt());
+        assertThat(capturedRequest.targetToken()).isEqualTo(event.notificationTargetToken());
+        assertThat(capturedRequest.type()).isEqualTo(event.notificationType());
     }
 
     @Test

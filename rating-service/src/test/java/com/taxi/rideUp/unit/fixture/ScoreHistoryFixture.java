@@ -32,7 +32,9 @@ public class ScoreHistoryFixture {
             100L,
             scoreHistoryId,
             score,
-            LocalDateTime.now()
+            LocalDateTime.now(),
+            "targetToken",
+            "ScoreEvent"
         );
     }
 }
