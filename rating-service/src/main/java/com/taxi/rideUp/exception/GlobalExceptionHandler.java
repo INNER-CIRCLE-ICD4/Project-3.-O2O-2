@@ -1,7 +1,9 @@
 package com.taxi.rideUp.exception;
 
 import com.taxi.rideUp.dto.response.ErrorResponse;
+import com.taxi.rideUp.exception.external.AverageScoreUpdateException;
 import com.taxi.rideUp.exception.external.DriveManageValidationException;
+import com.taxi.rideUp.exception.external.NotificationSendException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -22,16 +24,31 @@ import java.util.Map;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
-
-
     @ExceptionHandler(DriveManageValidationException.class)
     public ResponseEntity<ErrorResponse> handleDriveManageValidationException(DriveManageValidationException ex) {
-        log.error("DriveManage validation failed", ex);
+        String errorMessage = "drive manage validation failed";
+        log.error(errorMessage, ex);
 
-        ErrorResponse errorResponse = new ErrorResponse("DriveManage validation failed", ex.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(errorMessage, ex.getMessage());
+        return ResponseEntity.status(ex.getHttpStatusCode()).body(errorResponse);
+    }
 
-        return ResponseEntity.badRequest().body(errorResponse);
+    @ExceptionHandler(NotificationSendException.class)
+    public ResponseEntity<ErrorResponse> handleNotificationSendException(NotificationSendException ex) {
+        String errorMessage = "notification send failed";
+        log.error(errorMessage, ex);
+
+        ErrorResponse errorResponse = new ErrorResponse(errorMessage, ex.getMessage());
+        return ResponseEntity.status(ex.getHttpStatusCode()).body(errorResponse);
+    }
+
+    @ExceptionHandler(AverageScoreUpdateException.class)
+    public ResponseEntity<ErrorResponse> handleAverageScoreUpdateException(AverageScoreUpdateException ex) {
+        String errorMessage = "average score update failed";
+        log.error(errorMessage, ex);
+
+        ErrorResponse errorResponse = new ErrorResponse(errorMessage, ex.getMessage());
+        return ResponseEntity.status(ex.getHttpStatusCode()).body(errorResponse);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
